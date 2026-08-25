@@ -1,52 +1,35 @@
 package handlers
 
 import (
+	"backend/models"
 	"encoding/json"
+	"log"
 	"net/http"
-	"time"
 )
 
-type Game struct {
-	ID          string    `json:"gameId"`
-	Board       [9]string `json:"board"`
-	CurrentTurn string    `json:"currentTurn"`
-	Status      string    `json:"status"`
-	CreatedAt   time.Time `json:"createdAt"`
-}
+func (h *Handler) CreateGame(w http.ResponseWriter, r *http.Request) {
 
-var games = make(map[string]*Game)
-
-func CreateGame(w http.ResponseWriter, r *http.Request) {
-
-	var gameId string
-	if err := json.NewDecoder(r.Body).Decode(&gameId); err != nil {
-		http.Error(w, "Invalid json data", http.StatusBadRequest)
+	var gameBody models.GameRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&gameBody); err != nil {
+		http.Error(w, "Invalid json data: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	game := &Game{
-		ID:          gameId,
-		Board:       [9]string{"", "", "", "", "", "", "", "", ""},
-		CurrentTurn: "X",
-		Status:      "waiting",
-		CreatedAt:   time.Now(),
+	userID, ok := r.Context().Value("user_id").(int)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 
-	games[game.ID] = game
+	gameBody.UserID = userID
+	id, err := h.service.CreateGame(r.Context(), gameBody)
+	if err != nil {
+		log.Printf("CreateGame error: %v", err)
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(game)
-}
-
-func JoinGame(w http.ResponseWriter, r *http.Request) {
-
-	gameId := r.PathValue("id")
-	game, err := games[gameId]
-	if !err {
-		http.NotFound(w, r)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(game)
+	json.NewEncoder(w).Encode(map[string]string{"id": id})
 }

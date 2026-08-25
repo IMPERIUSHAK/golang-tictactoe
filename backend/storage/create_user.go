@@ -31,7 +31,7 @@ func (s *Storage) Registred(ctx context.Context, user models.UserBody) (int, err
 	).Scan(&id)
 
 	if err != nil {
-		return -1, nil
+		return -1, err
 	}
 
 	return id, nil

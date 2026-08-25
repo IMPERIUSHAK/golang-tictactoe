@@ -8,7 +8,7 @@ import (
 
 var home = template.Must(template.ParseFiles(filepath.Join("..", "templates", "login_page.html")))
 
-func LoginPage(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) LoginPage(w http.ResponseWriter, r *http.Request) {
 
 	home, err := template.ParseFiles(filepath.Join("..", "templates", "login_page.html"))
 	if err != nil {
@@ -20,7 +20,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HomePage(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) HomePage(w http.ResponseWriter, r *http.Request) {
 
 	home, err := template.ParseFiles(filepath.Join("..", "templates", "home.html"))
 	if err != nil {

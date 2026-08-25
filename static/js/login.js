@@ -63,9 +63,7 @@ async function LoginUser(LoginData) {
 
     console.log('Login successful');
     window.location.href = data.redirect || '/home';
-
   } catch (error) {
     console.error('Login error:', error);
-    alert('Login failed: ' + error.message);
   }
 }

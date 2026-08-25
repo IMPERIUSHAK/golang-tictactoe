@@ -47,6 +47,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+
 	var userBody models.UserBody
 	if err := json.NewDecoder(r.Body).Decode(&userBody); err != nil {
 		http.Error(w, "Invalid Response", http.StatusBadRequest)
@@ -68,10 +69,13 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:   "token",
-		Value:  token,
-		Secure: false,
-		MaxAge: 24 * 60 * 60,
+		Name:     "token",
+		Value:    token,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   24 * 60 * 60,
 	})
 
 	w.Header().Set("Content-Type", "application/json")

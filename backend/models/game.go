@@ -17,3 +17,9 @@ type Game struct {
 	UpdatedAt   time.Time  `json:"updated_at"`
 	FinishedAt  *time.Time `json:"finished_at"`
 }
+
+type GameRequestBody struct {
+	Name   string `json:"name"`
+	Role   string `json:"role"`
+	UserID int    `json:"user_id"`
+}

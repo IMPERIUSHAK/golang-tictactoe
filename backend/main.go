@@ -30,17 +30,17 @@ func main() {
 	fileServer := http.FileServer(http.Dir("../static"))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fileServer))
 
-	mux.HandleFunc("GET /", handlers.LoginPage)
+	mux.HandleFunc("GET /", handler.LoginPage)
 	mux.HandleFunc("POST /api/register", handler.Register)
 	mux.HandleFunc("POST /api/login", handler.Login)
 
 	protected := http.NewServeMux()
-	protected.HandleFunc("GET /home", handlers.HomePage)
-	protected.HandleFunc("POST /api/game/new", handlers.CreateGame)
+	protected.HandleFunc("GET /home", handler.HomePage)
+	protected.HandleFunc("POST /api/game/new", handler.CreateGame)
 	protected.HandleFunc("GET /ws", websocket.HandleWebSocket)
 
 	mux.Handle("GET /home", middleware.AuthMiddleware(protected))
-	mux.Handle("GET /api/game/", middleware.AuthMiddleware(protected))
+	mux.Handle("POST /api/game/new", middleware.AuthMiddleware(protected))
 
 	middle := middleware.Logs(mux)
 
