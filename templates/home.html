@@ -13,8 +13,19 @@
       <input type="text" id="game-name-input" placeholder="Name your game">
       <button id="create-game-confirm">Create</button>
       <button id="create-game-cancel">Cancel</button>
+      <div>
+         <input type="radio" id="xrole" name="role" value="x" checked />
+         <label for="x">X</label>
+         <input type="radio" id="orole" name="role" value="o"/>
+         <label for="o">O</label>
+       </div>
     </div>
-    <button id="find-game-button">Find Game</button>
+    <button id="find-room-button">Find Game</button>
+    <div id="find-room-form" style="display: none;">
+        <input type="text" id="room-id-input" placeholder="Type room id to join">
+        <button id="join-confirm-button">Join</button>
+        <button id="join-cancel-button">Cancel</button>
+    </div>
     <script src="/static/js/main.js"></script>
 
 </body>

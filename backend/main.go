@@ -5,7 +5,6 @@ import (
 	"backend/handlers"
 	"backend/middleware"
 	"backend/storage"
-	"backend/websocket"
 	"log"
 	"net/http"
 
@@ -37,10 +36,11 @@ func main() {
 	protected := http.NewServeMux()
 	protected.HandleFunc("GET /home", handler.HomePage)
 	protected.HandleFunc("POST /api/game/new", handler.CreateGame)
-	protected.HandleFunc("GET /ws", websocket.HandleWebSocket)
+	protected.HandleFunc("GET /api/game/join/{id}", handler.JoinGame)
 
 	mux.Handle("GET /home", middleware.AuthMiddleware(protected))
-	mux.Handle("POST /api/game/new", middleware.AuthMiddleware(protected))
+	mux.Handle("GET /api/game/", middleware.AuthMiddleware(protected))
+	mux.Handle("POST /api/game/", middleware.AuthMiddleware(protected))
 
 	middle := middleware.Logs(mux)
 

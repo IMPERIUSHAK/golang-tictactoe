@@ -23,7 +23,7 @@ loginbtn.addEventListener('click', function () {
 
 async function RegisterUser(LoginData) {
   try {
-    const response = await fetch('http://localhost:9090/api/register', {
+    const response = await fetch('api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ async function RegisterUser(LoginData) {
 
 async function LoginUser(LoginData) {
   try {
-    const response = await fetch('http://localhost:9090/api/login', {
+    const response = await fetch('api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

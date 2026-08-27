@@ -15,6 +15,11 @@ func (h *Handler) CreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if gameBody.Role != "x" && gameBody.Role != "o" {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
 	userID, ok := r.Context().Value("user_id").(int)
 	if !ok {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -32,4 +37,26 @@ func (h *Handler) CreateGame(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"id": id})
+}
+
+func (h *Handler) JoinGame(w http.ResponseWriter, r *http.Request) {
+
+	roomId := r.PathValue("id")
+
+	userID, ok := r.Context().Value("user_id").(int)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	role, err := h.service.JoinGame(r.Context(), userID, roomId)
+	if err != nil {
+		log.Printf("JOIN ROOM error: %v", err)
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
+	log.Printf("JOINED ROOM")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"role": role})
 }
